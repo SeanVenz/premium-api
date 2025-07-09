@@ -4,10 +4,12 @@ const crypto = require('crypto');
 
 const License = sequelize.define('License', {
   id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+      allowNull: false,
+      unique: true
+    },
   licenseKey: {
     type: DataTypes.STRING(64),
     allowNull: false,
@@ -15,6 +17,10 @@ const License = sequelize.define('License', {
     validate: {
       len: [32, 64]
     }
+  },
+  project:{
+    type: DataTypes.STRING(255),
+    allowNull: true,
   },
   isActive: {
     type: DataTypes.BOOLEAN,
@@ -58,7 +64,7 @@ const License = sequelize.define('License', {
   },
 }, {
   tableName: 'licenses',
-  timestamps: true, // This adds createdAt and updatedAt
+  timestamps: true,
   indexes: [
     {
       unique: true,

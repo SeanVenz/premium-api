@@ -42,13 +42,13 @@ const createUser = async (req, res) => {
 }
 
 const loginUser = async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    if (!username || !password) {
-        return res.status(400).json({ message: 'Username and password are required.' });
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Email and password are required.' });
     }
 
-    const isUserExisting = await User.findOne({ where: { username } });
+    const isUserExisting = await User.findOne({ where: { email } });
 
     if (!isUserExisting) {
         return res.status(404).json({ message: 'User not found.' });

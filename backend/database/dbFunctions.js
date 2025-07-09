@@ -9,8 +9,7 @@ const initializeDatabase = async () => {
 
         defineAssociations();
 
-        await sequelize.sync({alter: false});
-        console.log('Database synchronized successfully.');
+        console.log('Database connection initialized. Use migrations and seeders to set up tables.');
     } catch(error){
         console.log('Unable to connect to the database:', error);
     }

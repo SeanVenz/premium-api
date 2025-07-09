@@ -1,8 +1,9 @@
 const License = require('../models/License');
+const Project = require('../models/Project');
 
-// Generate a new license key (for internal use/testing)
 const generateLicense = async (req, res) => {
   try {
+    const {project} = req.params;
     const licenseKey = License.generateLicenseKey();
     const {id} = req.user;
 
@@ -10,10 +11,29 @@ const generateLicense = async (req, res) => {
       res.status(403).json({success:false, message: "User not authencticated"});
     }
 
+    if(!project){
+      return res.status(400).json({
+        success: false,
+        message: 'Project name is required'
+      });
+    }
+
+    const isValidProject = await Project.findOne({
+      where: { projectName: project }
+    });
+
+    if(!isValidProject) {
+      return res.status(404).json({
+        success: false,
+        message: 'Project not found'
+      });
+    }
+
     const license = await License.create({
       licenseKey: licenseKey,
       features: ['premium_templates', 'advanced_analytics', 'custom_branding'],
-      userId: id
+      userId: id,
+      project
     });
 
     res.status(201).json({

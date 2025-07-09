@@ -8,7 +8,7 @@ const {
 } = require('../controllers/licenseController');
 const authenticateToken = require('../middleware/authMiddleware');
 
-router.post('/generate', authenticateToken, generateLicense);
+router.post('/generate/:project', authenticateToken, generateLicense);
 
 router.post('/validate', validateLicense);
 
