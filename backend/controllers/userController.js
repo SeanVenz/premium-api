@@ -42,13 +42,26 @@ const createUser = async (req, res) => {
 }
 
 const loginUser = async (req, res) => {
-    const { email, password } = req.body;
+    const { username, email, password } = req.body;
+    console.log('Login attempt:',  username, email, password );
 
-    if (!email || !password) {
-        return res.status(400).json({ message: 'Email and password are required.' });
+    if (!password) {
+        return res.status(400).json({ message: 'Password is required.' });
     }
 
-    const isUserExisting = await User.findOne({ where: { email } });
+    if (!username && !email) {
+        return res.status(400).json({ message: 'Username or email is required.' });
+    }
+
+    // Find user by username or email
+    let whereCondition = {};
+    if (username) {
+        whereCondition = { username };
+    } else if (email) {
+        whereCondition = { email };
+    }
+
+    const isUserExisting = await User.findOne({ where: whereCondition });
 
     if (!isUserExisting) {
         return res.status(404).json({ message: 'User not found.' });
@@ -107,15 +120,11 @@ const getCurrentUser = async (req, res) => {
         }
 
         res.status(200).json({
-            success: true,
-            message: "User retrieved successfully.",
-            data: {
-                id: user.id,
-                username: user.username,
-                email: user.email,
-                createdAt: user.createdAt,
-                updatedAt: user.updatedAt
-            }
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt
         })
     }catch(error){
         if(error.name === 'JsonWebTokenERror'){

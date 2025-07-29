@@ -12,7 +12,8 @@ const cookieParser = require('cookie-parser');
 
 // Import routes
 const licenseRoutes = require('./routes/licenseRoutes');
-const userRoute = require('./routes/userRoute')
+const userRoute = require('./routes/userRoute');
+const paymentRoutes = require('./routes/paymentRoutes');
 
 app.use(express.json());
 app.use(cookieParser());
@@ -21,9 +22,13 @@ app.use(cors({
   credentials:true
 }));
 
+// Serve static files (for our test page)
+app.use('/public', express.static('public'));
+
 // Setup routes
 app.use('/api/licenses', licenseRoutes);
 app.use('/api/users', userRoute);
+app.use('/api/payments', paymentRoutes);
 
 require('./database/dbFunctions');
 

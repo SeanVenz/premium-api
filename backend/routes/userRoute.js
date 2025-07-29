@@ -6,6 +6,7 @@ router.get('/' ,userController.getAllUsers);
 router.post('/register', userController.createUser);
 router.post('/login', userController.loginUser);
 router.get('/me', userController.getCurrentUser);
+router.get('/profile', userController.getCurrentUser); // Add alias for profile
 router.post('/logout', userController.logoutUser);
 
 module.exports = router;
