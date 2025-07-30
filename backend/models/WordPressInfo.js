@@ -35,14 +35,7 @@ const WordPressInfo = sequelize.define('WordPressInfo', {
     allowNull: true
   },
 }, {
-  tableName: 'licenses',
-  timestamps: true,
-  indexes: [
-    {
-      unique: true,
-      fields: ['licenseKey']
-    }
-  ]
+  tableName: 'wordpress_infos'
 });
 
 module.exports = WordPressInfo;

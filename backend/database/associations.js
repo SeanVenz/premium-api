@@ -22,7 +22,7 @@ const defineAssociations = () => {
 
     License.hasMany(WordPressInfo, {
         foreignKey: 'licenseId',
-        as: 'wordpressInfos'
+        as: 'wordpressInfosId'
     });
 };
 

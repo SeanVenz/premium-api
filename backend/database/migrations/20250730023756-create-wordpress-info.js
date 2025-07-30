@@ -59,13 +59,6 @@ module.exports = {
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
       },
     });
-
-    // Add unique index for licenseKey
-    await queryInterface.addIndex('wordpress_infos', {
-      fields: ['siteUrl'],
-      unique: true,
-      name: 'wordpress_infos_site_url_unique'
-    });
   },
 
   async down(queryInterface, Sequelize) {

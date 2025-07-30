@@ -1,5 +1,7 @@
+const { up } = require('../database/migrations/20250709000001-create-user');
 const License = require('../models/License');
 const Project = require('../models/Project');
+const WordPressInfo = require('../models/WordPressInfo');
 
 class LicenseController {
   async generateLicense(req, res) {
@@ -89,19 +91,18 @@ class LicenseController {
           message: validationResult.message
         });
       }
-      const updates = {};
 
-      if (siteUrl) updates.siteUrl = siteUrl;
-      if (siteName) updates.siteName = siteName;
-      if (wpVersion) updates.wpVersion = wpVersion;
-      if (phpVersion) updates.phpVersion = phpVersion;
-      if (userAgent) updates.userAgent = userAgent;
-      if (ipAddress) updates.ipAddress = ipAddress;
+      // Create WordPress info record
+      await WordPressInfo.create({
+        siteUrl: siteUrl,
+        wpVersion: wpVersion,
+        siteName: siteName,
+        phpVersion: phpVersion,
+        userAgent: userAgent,
+        ipAddress: ipAddress,
+        licenseId: license.id
+      });
 
-      // Update the license record if we have any updates
-      if (Object.keys(updates).length > 0) {
-        await license.update(updates);
-      }
       res.json({
         success: true,
         message: 'License is valid',
@@ -109,14 +110,6 @@ class LicenseController {
           features: validationResult.features,
           validationCount: license.validationCount,
           lastValidated: license.lastValidated,
-          siteInfo: {
-            siteUrl: license.siteUrl,
-            siteName: license.siteName,
-            wpVersion: license.wpVersion,
-            phpVersion: license.phpVersion,
-            userAgent: license.userAgent,
-            ipAddress: license.ipAddress
-          }
         }
       });
 
@@ -200,5 +193,37 @@ class LicenseController {
       });
     }
   };
+
+  async getAllLicensesForUser(req, res){
+    try {
+      const user = req.user;
+
+      if (!user) {
+        return res.status(403).json({ success: false, message: 'User not authenticated' });
+      }
+
+      const licenses = await License.findAll({
+        where: { userId: user.id },
+        attributes: ['id', 'licenseKey', 'isActive', 'features', 'validationCount', 'lastValidated', 'createdAt', 'project']
+      });
+
+      const wordPressInfo = await WordPressInfo.findAll({
+        where: {licenseId : licenses.map(license => license.id)},
+        attributes: ['siteUrl', 'wpVersion', 'siteName', 'phpVersion', 'userAgent', 'ipAddress', 'createdAt', 'licenseId'],
+      });
+
+      res.json({
+        success: true,
+        data: {
+          licenses,
+          wordPressInfo
+        }
+      });
+
+    } catch (error) {
+      console.error('Error fetching licenses:', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch licenses', error: error.message });
+    }
+  }
 }
 module.exports = LicenseController;

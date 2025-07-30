@@ -12,4 +12,6 @@ router.get('/:licenseKey', authenticateToken, license.getLicenseDetails);
 
 router.put('/:licenseKey/deactivate', license.deactivateLicense);
 
+router.get('/user/license', authenticateToken, license.getAllLicensesForUser);
+
 module.exports = router;

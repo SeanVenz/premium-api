@@ -38,30 +38,6 @@ const License = sequelize.define('License', {
     type: DataTypes.INTEGER,
     defaultValue: 0
   },
-  siteUrl: {
-    type: DataTypes.STRING(255),
-    allowNull: true
-  },
-  wpVersion: {
-    type: DataTypes.STRING(255),
-    allowNull: true
-  },
-  siteName: {
-    type: DataTypes.STRING(255),
-    allowNull: true
-  },
-  phpVersion: {
-    type: DataTypes.STRING(255),
-    allowNull: true
-  },
-  userAgent: {
-    type: DataTypes.STRING(255),
-    allowNull: true
-  },
-  ipAddress: {
-    type: DataTypes.STRING(255),
-    allowNull: true
-  },
   isDeactivated: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
