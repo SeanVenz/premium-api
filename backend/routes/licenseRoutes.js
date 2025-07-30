@@ -6,7 +6,7 @@ const authenticateToken = require('../middleware/authMiddleware');
 
 router.post('/generate/:project', authenticateToken, license.generateLicense);
 
-router.post('/validate', license.validateLicense);
+router.post('/activate', license.activateLicense);
 
 router.get('/:licenseKey', authenticateToken, license.getLicenseDetails);
 

@@ -105,10 +105,14 @@ const PaymentForm = () => {
     setProcessing(true);
 
     try {
-      if (selectedSavedMethod) {
+      if (selectedSavedMethod && !showNewCard) {
         await handleSavedMethodPayment();
-      } else {
+      } else if (showNewCard) {
         await handleNewCardPayment();
+      } else {
+        setError('Please select a payment method');
+        setProcessing(false);
+        return;
       }
     } catch (err) {
       setError('Payment failed. Please try again.');
@@ -125,6 +129,11 @@ const PaymentForm = () => {
     }
 
     const cardElement = elements.getElement(CardElement);
+    
+    if (!cardElement) {
+      setError('Card information not found. Please enter your card details.');
+      return;
+    }
 
     // Create payment intent
     const paymentIntent = await paymentAPI.createPaymentIntent(
@@ -166,12 +175,18 @@ const PaymentForm = () => {
     if (result.success) {
       setSuccess(result);
     } else if (result.requiresAction) {
-      // Handle 3D Secure
-      const { error } = await stripe.confirmCardPayment(result.clientSecret);
+      // Handle 3D Secure - use confirmPayment instead of confirmCardPayment for saved methods
+      const { error } = await stripe.confirmPayment({
+        clientSecret: result.clientSecret,
+        confirmParams: {
+          return_url: window.location.origin + '/payment-return',
+        },
+      });
+      
       if (error) {
         setError(error.message);
       } else {
-        // Reload page to show success
+        // Payment succeeded after authentication
         window.location.reload();
       }
     } else {
@@ -274,6 +289,7 @@ const PaymentForm = () => {
                       onClick={() => {
                         setSelectedSavedMethod(method.id);
                         setShowNewCard(false);
+                        setError(''); // Clear any previous errors
                       }}
                     >
                       <div>
@@ -293,6 +309,7 @@ const PaymentForm = () => {
                   onClick={() => {
                     setSelectedSavedMethod(null);
                     setShowNewCard(true);
+                    setError(''); // Clear any previous errors
                   }}
                 >
                   Use New Card

@@ -62,6 +62,10 @@ const License = sequelize.define('License', {
     type: DataTypes.STRING(255),
     allowNull: true
   },
+  isDeactivated: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
 }, {
   tableName: 'licenses',
   timestamps: true,
@@ -92,6 +96,11 @@ License.generateLicenseKey = function() {
 
 // Instance method to validate license
 License.prototype.validateLicense = async function() {
+
+  if(this.isDeactivated) {
+    return { valid: false, message: 'License has been deactivated' };
+  }
+
   if (this.validationCount >= 1) {
     return { valid: false, message: 'License is already activated once' };
   }

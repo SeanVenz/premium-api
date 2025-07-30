@@ -56,8 +56,8 @@ class LicenseController {
     }
   };
 
-  //This will be called from WordPress)
-  async validateLicense(req, res) {
+  // This will be called from WordPress
+  async activateLicense(req, res) {
     try {
       const { licenseKey, siteUrl, siteName, wpVersion, phpVersion, userAgent, ipAddress } = req.body;
 
@@ -162,7 +162,6 @@ class LicenseController {
   };
 
   async deactivateLicense(req, res) {
-    console.log('here');
     try {
       const { licenseKey } = req.params;
 
@@ -176,8 +175,15 @@ class LicenseController {
           message: 'License not found'
         });
       }
+      if(license.isDeactivated === true) {
+        return res.status(400).json({
+          success: false,
+          message: 'License has already been deactivated'
+        });
+      }
 
       license.isActive = false;
+      license.isDeactivated = true;
       await license.save();
 
       res.json({
