@@ -1,6 +1,7 @@
 const License = require('../models/License');
 const {Sequelize} = require('sequelize');
 const User = require('../models/User');
+const WordPressInfo = require('../models/WordPressInfo');
 
 const defineAssociations = () => {
 
@@ -13,6 +14,16 @@ const defineAssociations = () => {
         foreignKey: 'userId',
         as: 'userGenerated',
     })
+    
+    WordPressInfo.belongsTo(License, {
+        foreignKey: 'licenseId',
+        as: 'license'
+    });
+
+    License.hasMany(WordPressInfo, {
+        foreignKey: 'licenseId',
+        as: 'wordpressInfos'
+    });
 };
 
 module.exports = defineAssociations

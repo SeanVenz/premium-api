@@ -2,43 +2,47 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('licenses', {
+    await queryInterface.createTable('wordpress_infos', {
       id: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
         allowNull: false
       },
-      licenseKey: {
-        type: Sequelize.STRING(64),
+      siteUrl: {
+        type: Sequelize.STRING(255),
         allowNull: false,
         unique: true
       },
-      project: {
+      wpVersion: {
         type: Sequelize.STRING(255),
         allowNull: true
       },
-      isActive: {
-        type: Sequelize.BOOLEAN,
+      siteName: {
+        type: Sequelize.STRING(255),
         defaultValue: true
       },
-      features: {
-        type: Sequelize.JSON,
-        defaultValue: JSON.stringify(['premium_templates', 'advanced_analytics', 'custom_branding'])
-      },
-      lastValidated: {
-        type: Sequelize.DATE,
+      phpVersion: {
+        type: Sequelize.STRING(255),
         allowNull: true
       },
-      validationCount: {
-        type: Sequelize.INTEGER,
-        defaultValue: 0
+      siteUrl: {
+        type: Sequelize.STRING(255),
+        allowNull: true
       },
-      userId: {
+      userAgent: {
+        type: Sequelize.STRING(255),
+        allowNull: true
+      },
+      ipAddress: {
+        type: Sequelize.STRING(255),
+        allowNull: true
+      },
+      licenseId: {
         type: Sequelize.UUID,
         allowNull: true,
         references: {
-          model: 'Users',
+          model: 'Licenses',
           key: 'id'
         },
         onUpdate: 'CASCADE',
@@ -54,21 +58,17 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
       },
-      isDeactivated: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
-      }
     });
 
     // Add unique index for licenseKey
-    await queryInterface.addIndex('licenses', {
-      fields: ['licenseKey'],
+    await queryInterface.addIndex('wordpress_infos', {
+      fields: ['siteUrl'],
       unique: true,
-      name: 'licenses_license_key_unique'
+      name: 'wordpress_infos_site_url_unique'
     });
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('licenses');
+    await queryInterface.dropTable('wordpress_infos');
   }
 };

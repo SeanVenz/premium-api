@@ -41,9 +41,6 @@ module.exports = {
         isActive: true,
         features: JSON.stringify(['premium_templates', 'advanced_analytics', 'custom_branding']),
         validationCount: 0,
-        siteUrl: 'https://example.com',
-        wpVersion: '6.4.2',
-        siteName: 'Example Site',
         userId: adminUser.id,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -55,8 +52,6 @@ module.exports = {
         isActive: true,
         features: JSON.stringify(['premium_templates', 'advanced_analytics']),
         validationCount: 0,
-        siteUrl: 'https://testsite.com',
-        siteName: 'Test Site',
         userId: testUser.id,
         createdAt: new Date(),
         updatedAt: new Date()
