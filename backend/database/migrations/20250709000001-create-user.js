@@ -37,6 +37,13 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
         unique: true
+      },
+      deletedAt: {
+        type: Sequelize.DATE,
+        allowNull: true
+      },
+      role: {
+        type: Sequelize.ENUM('superAdmin', 'admin', 'user', 'contentCreator'),
       }
     });
   },

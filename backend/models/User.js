@@ -1,5 +1,6 @@
 const {DataTypes} = require('sequelize');
 const sequelize = require('../database/sequelize');
+const { up } = require('../database/migrations/20250709000001-create-user');
 
 const User = sequelize.define('User', {
     id: {
@@ -31,6 +32,19 @@ const User = sequelize.define('User', {
     createdAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+    },
+    deletedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+    role: {
+        type: DataTypes.ENUM('superAdmin', 'admin', 'user', 'contentCreator'),
+        defaultValue: 'user',
+        allowNull: false
     }
 });
 

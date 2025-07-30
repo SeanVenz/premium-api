@@ -35,8 +35,8 @@ class UserController {
 
             const hashedPassword = await bcrypt.hash(password, 10);
 
-            const newUser = await User.create({ username, password: hashedPassword, email });
-            res.status(201).json({ data: newUser, success: true, message: "User successfully registered." });
+            await User.create({ username, password: hashedPassword, email, role: 'user' });
+            res.status(201).json({ success: true, message: "User successfully registered." });
         } catch (error) {
             console.log('Error creating user:', error);
             res.status(500).json({ message: 'Internal Server Error' });

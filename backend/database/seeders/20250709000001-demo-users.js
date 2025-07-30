@@ -15,7 +15,8 @@ module.exports = {
         email: 'admin@example.com',
         password: hashedPassword,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        role: 'superAdmin',
       },
       {
         id: testUserId,
@@ -23,7 +24,8 @@ module.exports = {
         email: 'test@example.com',
         password: await bcrypt.hash('test123', 10),
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        role: 'user',
       }
     ], {});
   },
