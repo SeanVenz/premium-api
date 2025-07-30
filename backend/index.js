@@ -10,7 +10,6 @@ const initializeDatabase = require('./database/dbFunctions');
 
 const cookieParser = require('cookie-parser');
 
-// Import routes
 const licenseRoutes = require('./routes/licenseRoutes');
 const userRoute = require('./routes/userRoute');
 const paymentRoutes = require('./routes/paymentRoutes');
@@ -18,12 +17,9 @@ const paymentRoutes = require('./routes/paymentRoutes');
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin:process.env.FRONTEND_URL,
-  credentials:true
+  origin: process.env.FRONTEND_URL,
+  credentials: true
 }));
-
-// Serve static files (for our test page)
-app.use('/public', express.static('public'));
 
 // Setup routes
 app.use('/api/licenses', licenseRoutes);
@@ -34,6 +30,6 @@ require('./database/dbFunctions');
 
 initializeDatabase().then(() => {
   app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
 })

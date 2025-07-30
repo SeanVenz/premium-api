@@ -1,19 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const {
-  generateLicense,
-  validateLicense,
-  getLicenseDetails,
-  deactivateLicense
-} = require('../controllers/licenseController');
+const LicenseController = require('../controllers/licenseController');
+const license = new LicenseController();
 const authenticateToken = require('../middleware/authMiddleware');
 
-router.post('/generate/:project', authenticateToken, generateLicense);
+router.post('/generate/:project', authenticateToken, license.generateLicense);
 
-router.post('/validate', validateLicense);
+router.post('/validate', license.validateLicense);
 
-router.get('/:licenseKey', authenticateToken, getLicenseDetails);
+router.get('/:licenseKey', authenticateToken, license.getLicenseDetails);
 
-router.put('/:licenseKey/deactivate', deactivateLicense);
+router.put('/:licenseKey/deactivate', license.deactivateLicense);
 
 module.exports = router;

@@ -2,10 +2,12 @@ const stripe = require('../config/stripe');
 const License = require('../models/License');
 const User = require('../models/User');
 
-const createPaymentIntent = async (req, res) => {
-  try {
-    const { projectName, amount = 2999, savePaymentMethod = false } = req.body; 
-    const userId = req.user?.id;
+class PaymentController {
+
+  async createPaymentIntent(req, res) {
+    try {
+      const { projectName, amount = 2999, savePaymentMethod = false } = req.body;
+      const userId = req.user?.id;
 
     if (!projectName) {
       return res.status(400).json({ error: 'Project name is required' });
@@ -69,7 +71,7 @@ const createPaymentIntent = async (req, res) => {
   }
 };
 
-const getPaymentDetails = async (req, res) => {
+async getPaymentDetails(req, res) {
   try {
     const { paymentIntentId } = req.params;
 
@@ -90,7 +92,7 @@ const getPaymentDetails = async (req, res) => {
   }
 };
 
-const handlePaymentSuccess = async (req, res) => {
+async handlePaymentSuccess(req, res) {
   try {
     const { paymentIntentId } = req.body;
 
@@ -107,7 +109,7 @@ const handlePaymentSuccess = async (req, res) => {
     const license = await License.create({
       licenseKey,
       project: projectName,
-      isActive: true,
+      isActive: false,
       features: ['premium_templates', 'advanced_analytics', 'custom_branding'],
       userId: userId !== 'anonymous' ? userId : null,
       validationCount: 0
@@ -137,7 +139,7 @@ const handlePaymentSuccess = async (req, res) => {
 };
 
 // Webhook handler for Stripe events
-const handleWebhook = async (req, res) => {
+async handleWebhook(req, res) {
   const sig = req.headers['stripe-signature'];
   let event;
 
@@ -169,7 +171,7 @@ const handleWebhook = async (req, res) => {
         await License.create({
           licenseKey,
           project: projectName,
-          isActive: true,
+          isActive: false,
           features: ['premium_templates', 'advanced_analytics', 'custom_branding'],
           userId: userId !== 'anonymous' ? userId : null,
           validationCount: 0
@@ -194,14 +196,14 @@ const handleWebhook = async (req, res) => {
 };
 
 // Get Stripe publishable key for frontend
-const getStripeConfig = async (req, res) => {
+async getStripeConfig(req, res) {
   res.json({
     publishableKey: process.env.STRIPE_PUBLISHABLE_KEY
   });
 };
 
 // Get user's saved payment methods
-const getSavedPaymentMethods = async (req, res) => {
+async getSavedPaymentMethods(req, res) {
   try {
     const userId = req.user?.id;
 
@@ -239,7 +241,7 @@ const getSavedPaymentMethods = async (req, res) => {
 };
 
 // Create payment with saved payment method
-const createPaymentWithSavedMethod = async (req, res) => {
+async createPaymentWithSavedMethod(req, res) {
   try {
     const { projectName, paymentMethodId, amount = 2999 } = req.body;
     const userId = req.user?.id;
@@ -280,7 +282,7 @@ const createPaymentWithSavedMethod = async (req, res) => {
       const license = await License.create({
         licenseKey,
         project: projectName,
-        isActive: true,
+        isActive: false,
         features: ['premium_templates', 'advanced_analytics', 'custom_branding'],
         userId: userId,
         validationCount: 0
@@ -314,13 +316,6 @@ const createPaymentWithSavedMethod = async (req, res) => {
     res.status(500).json({ error: 'Failed to process payment' });
   }
 };
+}
 
-module.exports = {
-  createPaymentIntent,
-  getPaymentDetails,
-  handlePaymentSuccess,
-  handleWebhook,
-  getStripeConfig,
-  getSavedPaymentMethods,
-  createPaymentWithSavedMethod
-};
+module.exports = PaymentController;

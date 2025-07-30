@@ -92,18 +92,12 @@ License.generateLicenseKey = function() {
 
 // Instance method to validate license
 License.prototype.validateLicense = async function() {
-  if (!this.isActive) {
-    return { valid: false, message: 'License is inactive' };
+  if (this.validationCount >= 1) {
+    return { valid: false, message: 'License is already activated once' };
   }
-  
-  // Update validation tracking
-  this.lastValidated = new Date();
-
-//   if(this.validationCount > 1){
-//     return { valid: false, message: 'License is already activated once' };
-//   }
 
   this.validationCount += 1;
+  this.lastValidated = new Date();
   await this.save();
   
   return {
