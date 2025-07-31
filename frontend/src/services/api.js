@@ -12,8 +12,28 @@ const api = axios.create({
 
 // Auth API
 export const authAPI = {
-  login: async (username, password) => {
-    const response = await api.post('/users/login', { username, password });
+  login: async (usernameOrEmail, password) => {
+    // Determine if it's an email or username
+    const loginData = usernameOrEmail.includes('@') 
+      ? { email: usernameOrEmail, password }
+      : { username: usernameOrEmail, password };
+      
+    const response = await api.post('/users/login', loginData);
+    return response.data;
+  },
+
+  register: async (username, email, password) => {
+    const response = await api.post('/users/register', { username, email, password });
+    return response.data;
+  },
+
+  verifyEmail: async (token) => {
+    const response = await api.get(`/users/verify/${token}`);
+    return response.data;
+  },
+
+  resendVerification: async (email) => {
+    const response = await api.post('/users/resend-verification', { email });
     return response.data;
   },
 

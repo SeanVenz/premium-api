@@ -17,6 +17,7 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
         role: 'superAdmin',
+        isVerified: true,
       },
       {
         id: testUserId,
@@ -26,6 +27,7 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
         role: 'user',
+        isVerified: true,
       }
     ], {});
   },

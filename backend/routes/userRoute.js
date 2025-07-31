@@ -9,5 +9,7 @@ router.post('/login', user.loginUser);
 router.get('/me', user.getCurrentUser);
 router.get('/profile', user.getCurrentUser);
 router.post('/logout', user.logoutUser);
+router.get('/verify/:token', user.verifyEmail);
+router.post('/resend-verification', user.resendVerification);
 
 module.exports = router;

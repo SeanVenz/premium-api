@@ -48,21 +48,10 @@ module.exports = {
       {
         id: uuidv4(),
         licenseKey: generateLicenseKey(),
-        project: 'Premium React App',
-        isActive: true,
-        features: JSON.stringify(['premium_templates', 'advanced_analytics']),
-        validationCount: 0,
-        userId: testUser.id,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        id: uuidv4(),
-        licenseKey: generateLicenseKey(),
         project: 'Enterprise Solution',
         isActive: false,
         features: JSON.stringify(['premium_templates', 'advanced_analytics', 'custom_branding', 'priority_support']),
-        validationCount: 5,
+        validationCount: 0,
         userId: adminUser.id,
         createdAt: new Date(),
         updatedAt: new Date()

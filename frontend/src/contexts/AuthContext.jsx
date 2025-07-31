@@ -35,9 +35,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (username, password) => {
+  const login = async (usernameOrEmail, password) => {
     try {
-      const response = await authAPI.login(username, password);
+      const response = await authAPI.login(usernameOrEmail, password);
       setUser(response.user);
       setIsAuthenticated(true);
       return { success: true, user: response.user };
@@ -62,12 +62,45 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const register = async (username, email, password) => {
+    try {
+      const response = await authAPI.register(username, email, password);
+      return { success: true, data: response };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Registration failed';
+      return { success: false, error: errorMessage };
+    }
+  };
+
+  const verifyEmail = async (token) => {
+    try {
+      const response = await authAPI.verifyEmail(token);
+      return { success: true, data: response };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Verification failed';
+      return { success: false, error: errorMessage };
+    }
+  };
+
+  const resendVerification = async (email) => {
+    try {
+      const response = await authAPI.resendVerification(email);
+      return { success: true, data: response };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Failed to resend verification';
+      return { success: false, error: errorMessage };
+    }
+  };
+
   const value = {
     user,
     isAuthenticated,
     loading,
     login,
     logout,
+    register,
+    verifyEmail,
+    resendVerification,
     checkAuthStatus
   };
 

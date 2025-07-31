@@ -24,6 +24,18 @@ const User = sequelize.define('User', {
         allowNull: false,
         unique: true,
     },
+    isVerified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+    },
+    verificationToken: {
+        type: DataTypes.STRING(64),
+        allowNull: true,
+    },
+    passwordResetToken: {
+        type: DataTypes.STRING(64),
+        allowNull: true,
+    },
     stripeCustomerId: {
         type: DataTypes.STRING,
         allowNull: true,

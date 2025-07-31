@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const Login = () => {
@@ -15,6 +16,7 @@ const Login = () => {
 
     try {
       const result = await login(username, password);
+      
       if (!result.success) {
         setError(result.error);
       }
@@ -38,7 +40,7 @@ const Login = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                Username:
+                Username or Email:
               </label>
               <div className="mt-1">
                 <input
@@ -48,6 +50,7 @@ const Login = () => {
                   onChange={(e) => setUsername(e.target.value)}
                   required
                   disabled={loading}
+                  placeholder="Enter your username or email"
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
                 />
               </div>
@@ -87,13 +90,15 @@ const Login = () => {
             </div>
           </form>
 
-          <div className="mt-8 p-4 bg-gray-50 rounded-md">
-            <h4 className="text-sm font-medium text-gray-900 mb-2">Demo Credentials:</h4>
-            <div className="text-xs text-gray-600 space-y-1">
-              <p><span className="font-medium">Admin:</span> admin / admin123</p>
-              <p><span className="font-medium">Test User:</span> testuser / test123</p>
-            </div>
+          <div className="text-center mt-6">
+            <p className="text-sm text-gray-600">
+              Don't have an account?{' '}
+              <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
+                Create one here
+              </Link>
+            </p>
           </div>
+
         </div>
       </div>
     </div>
