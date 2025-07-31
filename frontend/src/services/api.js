@@ -99,4 +99,25 @@ export const paymentAPI = {
   }
 };
 
+// License API
+export const licenseAPI = {
+  getUserLicenses: async () => {
+    const response = await api.get('/licenses/user/license');
+    return response.data;
+  },
+
+  activateLicense: async (licenseKey, siteData) => {
+    const response = await api.post('/licenses/activate', {
+      licenseKey,
+      ...siteData
+    });
+    return response.data;
+  },
+
+  deactivateLicense: async (licenseKey) => {
+    const response = await api.put(`/licenses/${licenseKey}/deactivate`);
+    return response.data;
+  }
+};
+
 export default api;

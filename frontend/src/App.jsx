@@ -6,7 +6,9 @@ import Register from './components/Register';
 import EmailVerification from './components/EmailVerification';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
+import Dashboard from './components/Dashboard';
 import Payment from './components/Payment';
+import WebhookTest from './components/WebhookTest';
 import './App.css';
 
 // Protected Route Component
@@ -50,7 +52,7 @@ function PublicRoute({ children }) {
     );
   }
   
-  return isAuthenticated ? <Navigate to="/payment" replace /> : children;
+  return isAuthenticated ? <Navigate to="/dashboard" replace /> : children;
 }
 
 function AppContent() {
@@ -86,6 +88,14 @@ function AppContent() {
       
       {/* Protected routes */}
       <Route 
+        path="/dashboard" 
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
         path="/payment" 
         element={
           <ProtectedRoute>
@@ -93,9 +103,17 @@ function AppContent() {
           </ProtectedRoute>
         } 
       />
+      <Route 
+        path="/webhook-test" 
+        element={
+          <ProtectedRoute>
+            <WebhookTest />
+          </ProtectedRoute>
+        } 
+      />
       
       {/* Default redirects */}
-      <Route path="/" element={<Navigate to="/payment" replace />} />
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
