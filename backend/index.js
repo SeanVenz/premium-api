@@ -13,6 +13,11 @@ const cookieParser = require('cookie-parser');
 const licenseRoutes = require('./routes/licenseRoutes');
 const userRoute = require('./routes/userRoute');
 const paymentRoutes = require('./routes/paymentRoutes');
+const webhookRoutes = require('./routes/webhookRoutes');
+
+// IMPORTANT: Webhook routes MUST come before express.json() middleware
+// because Stripe webhooks need raw body for signature verification
+app.use('/api/webhooks', webhookRoutes);
 
 app.use(express.json());
 app.use(cookieParser());

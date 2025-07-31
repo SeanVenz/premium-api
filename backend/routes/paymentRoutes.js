@@ -23,8 +23,4 @@ router.get('/payment/:paymentIntentId', authenticateToken, payment.getPaymentDet
 // Handle successful payment and generate license
 router.post('/payment-success', payment.handlePaymentSuccess);
 
-// Webhook endpoint for Stripe events
-// Note: This should be before any body parsing middleware for raw body access
-router.post('/webhook', express.raw({ type: 'application/json' }), payment.handleWebhook);
-
 module.exports = router;

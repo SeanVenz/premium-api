@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Payment Failed - Please Try Again</title>
+    <link href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1f1f1;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+        }
+        .error-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .retry-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="error-icon">❌</div>
+            <h1>Payment Failed</h1>
+            <p>We couldn't process your payment for {{projectName}}</p>
+        </div>
+        
+        <div class="content">
+            <h2>Hi {{fullName}},</h2>
+            
+            <p>We're sorry, but your payment could not be processed due to the following reason:</p>
+            
+            <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 15px; margin: 20px 0;">
+                <strong>Error:</strong> {{failureReason}}
+            </div>
+            
+            <p>Don't worry! This happens sometimes. Here's what you can do:</p>
+            
+            <ul>
+                <li>Check that your card information is correct</li>
+                <li>Ensure your card has sufficient funds</li>
+                <li>Try a different payment method</li>
+                <li>Contact your bank if the issue persists</li>
+            </ul>
+            
+            <div style="text-align: center;">
+                <a href="{{retryUrl}}" class="retry-button">Try Payment Again</a>
+            </div>
+            
+            <p>If you continue to experience issues, please contact our support team at support@premiumapi.com</p>
+        </div>
+        
+        <div class="footer">
+            <p>© 2025 Premium API. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -138,63 +138,6 @@ async handlePaymentSuccess(req, res) {
   }
 };
 
-// Webhook handler for Stripe events
-async handleWebhook(req, res) {
-  const sig = req.headers['stripe-signature'];
-  let event;
-
-  try {
-    // Only verify webhook signature if webhook secret is configured
-    if (process.env.STRIPE_WEBHOOK_SECRET && process.env.STRIPE_WEBHOOK_SECRET !== 'whsec_your_webhook_secret_here') {
-      event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
-    } else {
-      // For testing without webhook secret, just parse the body
-      console.log('⚠️  Webhook signature verification skipped (no webhook secret configured)');
-      event = JSON.parse(req.body);
-    }
-  } catch (err) {
-    console.error('Webhook signature verification failed:', err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
-  }
-
-  // Handle the event
-  switch (event.type) {
-    case 'payment_intent.succeeded':
-      const paymentIntent = event.data.object;
-      console.log('Payment succeeded:', paymentIntent.id);
-      
-      // Auto-generate license when payment succeeds
-      try {
-        const { projectName, userId } = paymentIntent.metadata;
-        const licenseKey = License.generateLicenseKey();
-
-        await License.create({
-          licenseKey,
-          project: projectName,
-          isActive: false,
-          features: ['premium_templates', 'advanced_analytics', 'custom_branding'],
-          userId: userId !== 'anonymous' ? userId : null,
-          validationCount: 0
-        });
-
-        console.log('License auto-generated for payment:', paymentIntent.id);
-      } catch (error) {
-        console.error('Error auto-generating license:', error);
-      }
-      break;
-
-    case 'payment_intent.payment_failed':
-      const failedPayment = event.data.object;
-      console.log('Payment failed:', failedPayment.id);
-      break;
-
-    default:
-      console.log(`Unhandled event type ${event.type}`);
-  }
-
-  res.json({ received: true });
-};
-
 // Get Stripe publishable key for frontend
 async getStripeConfig(req, res) {
   res.json({
