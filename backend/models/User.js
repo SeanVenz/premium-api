@@ -36,6 +36,10 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING(64),
         allowNull: true,
     },
+    forgotPasswordExpires: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
     stripeCustomerId: {
         type: DataTypes.STRING,
         allowNull: true,

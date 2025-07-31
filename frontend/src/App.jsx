@@ -4,6 +4,8 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Login from './components/Login';
 import Register from './components/Register';
 import EmailVerification from './components/EmailVerification';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 import Payment from './components/Payment';
 import './App.css';
 
@@ -71,7 +73,16 @@ function AppContent() {
           </PublicRoute>
         } 
       />
+      <Route 
+        path="/forgot-password" 
+        element={
+          <PublicRoute>
+            <ForgotPassword />
+          </PublicRoute>
+        } 
+      />
       <Route path="/verify/:token" element={<EmailVerification />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
       
       {/* Protected routes */}
       <Route 

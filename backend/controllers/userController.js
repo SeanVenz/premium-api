@@ -275,6 +275,135 @@ class UserController {
             });
         }
     }
+
+    async forgotPassword(req, res) {
+        try {
+            const { email } = req.body;
+
+            if (!email) {
+                return res.status(400).json({ 
+                    success: false, 
+                    message: 'Email is required.' 
+                });
+            }
+
+            const user = await User.findOne({ where: { email } });
+
+            if (!user) {
+                // Don't reveal if email exists or not for security
+                return res.status(200).json({ 
+                    success: true, 
+                    message: 'If this email is registered, you will receive a password reset link.' 
+                });
+            }
+
+            // Generate reset token
+            const resetToken = crypto.randomBytes(32).toString('hex');
+            const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+            const emailTemplate = await getEmailTemplate('reset-password', {
+                fullName: user.username,
+                resetUrl
+            });
+
+            await sendMail({
+                to: email,
+                subject: 'Reset your password',
+                html: emailTemplate
+            });
+
+            // Update user with reset token and expiry (1 hour)
+            await user.update({ 
+                passwordResetToken: resetToken,
+                forgotPasswordExpires: new Date(Date.now() + 3600000) // 1 hour from now
+            });
+
+            res.status(200).json({ 
+                success: true, 
+                message: 'If this email is registered, you will receive a password reset link.' 
+            });
+
+        } catch (error) {
+            console.error('Error in forgot password:', error);
+            res.status(500).json({ 
+                success: false, 
+                message: 'Internal Server Error' 
+            });
+        }
+    }
+
+    async resetPassword(req, res) {
+        try {
+            const { token } = req.params;
+            const { password, confirmPassword } = req.body;
+
+            if (!token) {
+                return res.status(400).json({ 
+                    success: false, 
+                    message: 'Reset token is required.' 
+                });
+            }
+
+            if (!password || !confirmPassword) {
+                return res.status(400).json({ 
+                    success: false, 
+                    message: 'Password and confirm password are required.' 
+                });
+            }
+
+            if (password !== confirmPassword) {
+                return res.status(400).json({ 
+                    success: false, 
+                    message: 'Passwords do not match.' 
+                });
+            }
+
+            if (password.length < 6) {
+                return res.status(400).json({ 
+                    success: false, 
+                    message: 'Password must be at least 6 characters long.' 
+                });
+            }
+
+            const user = await User.findOne({ 
+                where: { 
+                    passwordResetToken: token,
+                    forgotPasswordExpires: {
+                        [require('sequelize').Op.gt]: new Date()
+                    }
+                }
+            });
+
+            if (!user) {
+                return res.status(404).json({ 
+                    success: false, 
+                    message: 'Invalid or expired reset token.' 
+                });
+            }
+
+            // Hash new password
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            // Update user with new password and clear reset token
+            await user.update({
+                password: hashedPassword,
+                passwordResetToken: null,
+                forgotPasswordExpires: null
+            });
+
+            res.status(200).json({ 
+                success: true, 
+                message: 'Password reset successfully! You can now login with your new password.' 
+            });
+
+        } catch (error) {
+            console.error('Error resetting password:', error);
+            res.status(500).json({ 
+                success: false, 
+                message: 'Internal Server Error' 
+            });
+        }
+    }
 }
 
 module.exports = UserController;

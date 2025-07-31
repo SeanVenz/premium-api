@@ -11,5 +11,7 @@ router.get('/profile', user.getCurrentUser);
 router.post('/logout', user.logoutUser);
 router.get('/verify/:token', user.verifyEmail);
 router.post('/resend-verification', user.resendVerification);
+router.post('/forgot-password', user.forgotPassword);
+router.post('/reset-password/:token', user.resetPassword);
 
 module.exports = router;
