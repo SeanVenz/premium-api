@@ -2,6 +2,10 @@ const stripe = require('../config/stripe');
 const User = require('../models/User');
 const License = require('../models/License');
 const { getEmailTemplate, sendMail } = require('../utils');
+const LicenseController = require('./licenseController');
+
+// Create an instance of LicenseController
+const licenseController = new LicenseController();
 
 class WebhookController {
     async handleStripeWebhook(req, res) {
@@ -88,15 +92,18 @@ class WebhookController {
             const projectName = paymentIntent.metadata?.projectName || 'Premium License';
             const amount = paymentIntent.amount / 100; // Convert from cents
 
-            // Create license record
-            const license = await License.create({
-                userId: user.id,
-                project: projectName,
-                licenseKey: License.generateLicenseKey(),
-                isActive: false, // Will be activated when user validates
-                features: ['premium_templates', 'advanced_analytics', 'custom_branding'],
-                validationCount: 0
-            });
+            // Create license using license controller
+            const licenseResult = await licenseController.createLicenseForUser(
+                user.id,
+                projectName,
+                {
+                    isActive: false, // Will be activated when user validates
+                    validationCount: 0,
+                    features: ['premium_templates', 'advanced_analytics', 'custom_branding']
+                }
+            );
+
+            const license = licenseResult.data;
 
             // Send success email with license key
             const emailTemplate = await getEmailTemplate('payment-success', {
