@@ -4,17 +4,47 @@ const Project = require('../models/Project');
 const WordPressInfo = require('../models/WordPressInfo');
 
 class LicenseController {
-  async generateLicense(req, res) {
+  
+  async createLicenseForUser(userId, projectName, options = {}) {
     try {
-      const { project } = req.params;
       const licenseKey = License.generateLicenseKey();
-      const { id } = req.user;
+      
+      const license = await License.create({
+        licenseKey: licenseKey,
+        features: options.features || ['premium_templates', 'advanced_analytics', 'custom_branding'],
+        userId: userId,
+        project: projectName,
+        isActive: options.isActive || false,
+        validationCount: options.validationCount || 0
+      });
 
-      if (!id) {
+      return {
+        success: true,
+        data: {
+          id: license.id,
+          licenseKey: license.licenseKey,
+          features: license.features,
+          project: license.project,
+          isActive: license.isActive,
+          createdAt: license.createdAt
+        }
+      };
+    } catch (error) {
+      console.error('Error creating license:', error);
+      throw error;
+    }
+  }
+
+  async generateLicense(userId, projectName, options = {}) {
+    try {
+      const licenseKey = License.generateLicenseKey();
+
+
+      if (!userId) {
         res.status(403).json({ success: false, message: "User not authencticated" });
       }
 
-      if (!project) {
+      if (!projectName) {
         return res.status(400).json({
           success: false,
           message: 'Project name is required'
@@ -22,7 +52,7 @@ class LicenseController {
       }
 
       const isValidProject = await Project.findOne({
-        where: { projectName: project }
+        where: { projectName: projectName }
       });
 
       if (!isValidProject) {
@@ -207,7 +237,7 @@ class LicenseController {
 
       const licenses = await License.findAll({
         where: { userId: user.id },
-        attributes: ['id', 'licenseKey', 'isActive', 'features', 'validationCount', 'lastValidated', 'createdAt', 'project']
+        attributes: ['id', 'licenseKey', 'isActive', 'features', 'validationCount', 'lastValidated', 'createdAt', 'project', 'isDeactivated'],
       });
 
       const wordPressInfo = await WordPressInfo.findAll({
