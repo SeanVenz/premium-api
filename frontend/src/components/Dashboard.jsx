@@ -228,17 +228,36 @@ const Dashboard = () => {
                             ) : (
                                 <div className="divide-y divide-gray-200">
                                     {licenses.map((license, index) => (
-                                        <div key={license.id || index} className="p-6">
+                                        <div key={license.id || index} className={`p-6 ${license.isDeactivated ? 'opacity-50 bg-gray-100' : ''}`}>
                                             <div className="flex items-center justify-between mb-4">
                                                 <h4 className="text-lg font-medium text-gray-900">
                                                     License #{license.id || index + 1}
                                                 </h4>
-                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                                    license.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                                                }`}>
-                                                    {license.isActive ? 'Active' : 'Inactive'}
-                                                </span>
+                                                <div className="flex items-center space-x-2">
+                                                    {license.isDeactivated ? (
+                                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                                            Permanently Deactivated
+                                                        </span>
+                                                    ) : (
+                                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                                            license.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                                        }`}>
+                                                            {license.isActive ? 'Active' : 'Inactive'}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
+                                            
+                                            {license.isDeactivated && (
+                                                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                                                    <div className="flex items-center">
+                                                        <span className="text-red-400 text-lg mr-2">🚫</span>
+                                                        <p className="text-sm text-red-700 font-medium">
+                                                            This license has been permanently deactivated and cannot be used anymore.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            )}
                                             
                                             <dl className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
                                                 <div>
@@ -267,8 +286,8 @@ const Dashboard = () => {
                                                         <div>
                                                             <dt className="text-sm font-medium text-gray-500">Last Updated</dt>
                                                             <dd className="mt-1 text-sm text-gray-900">
-                                                                {license.WordPressInfo.lastUpdated ? 
-                                                                    new Date(license.WordPressInfo.lastUpdated).toLocaleDateString() : 
+                                                                {license.updatedAt ? 
+                                                                    new Date(license.updatedAt).toLocaleDateString() : 
                                                                     'N/A'
                                                                 }
                                                             </dd>
@@ -289,38 +308,54 @@ const Dashboard = () => {
                                                 <div>
                                                     <dt className="text-sm font-medium text-gray-500">Updated</dt>
                                                     <dd className="mt-1 text-sm text-gray-900">
-                                                        {license.updatedAt ? 
-                                                            new Date(license.updatedAt).toLocaleDateString() : 
+                                                        {license.lastValidated ? 
+                                                            new Date(license.lastValidated).toLocaleDateString() : 
                                                             'N/A'
-                                                        }
+                                                        }   
                                                     </dd>
                                                 </div>
                                             </dl>
                                             
                                             <div className="mt-4 flex space-x-3">
-                                                <button
-                                                    onClick={() => handleToggleLicense(license.id, !license.isActive)}
-                                                    disabled={actionLoading}
-                                                    className={`inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white ${
-                                                        license.isActive
-                                                            ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
-                                                            : 'bg-green-600 hover:bg-green-700 focus:ring-green-500'
-                                                    } focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50`}
-                                                >
-                                                    {actionLoading ? (
-                                                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                                                    ) : null}
-                                                    {license.isActive ? 'Deactivate' : 'Activate'}
-                                                </button>
+                                                {license.isDeactivated ? (
+                                                    // Show disabled state for permanently deactivated licenses
+                                                    <div className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-100 cursor-not-allowed">
+                                                        <span className="mr-2">🚫</span>
+                                                        Cannot be activated
+                                                    </div>
+                                                ) : license.isActive ? (
+                                                    // Show deactivate button if license is active and not permanently deactivated
+                                                    <button
+                                                        onClick={() => handleToggleLicense(license.licenseKey, false)}
+                                                        disabled={actionLoading}
+                                                        className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:ring-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50"
+                                                    >
+                                                        {actionLoading ? (
+                                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                                        ) : null}
+                                                        Deactivate
+                                                    </button>
+                                                ) : (
+                                                    // Show WordPress activation message if license is not active and not permanently deactivated
+                                                    <div className="inline-flex items-center px-3 py-2 border border-blue-300 text-sm leading-4 font-medium rounded-md text-blue-700 bg-blue-50">
+                                                        <span className="mr-2">🔌</span>
+                                                        Activate this license through your WordPress plugin
+                                                    </div>
+                                                )}
                                                 
                                                 <button
                                                     onClick={() => {
                                                         navigator.clipboard.writeText(license.licenseKey || '');
                                                         alert('License key copied to clipboard!');
                                                     }}
-                                                    className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                                    disabled={license.isDeactivated}
+                                                    className={`inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                                                        license.isDeactivated 
+                                                            ? 'text-gray-400 bg-gray-100 cursor-not-allowed' 
+                                                            : 'text-gray-700 bg-white hover:bg-gray-50'
+                                                    }`}
                                                 >
-                                                    Copy Key
+                                                    {license.isDeactivated ? 'Key Unavailable' : 'Copy Key'}
                                                 </button>
                                             </div>
                                         </div>
