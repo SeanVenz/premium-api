@@ -1,311 +1,90 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="x-apple-disable-message-reformatting">
-    <title>Verify Your Email - Premium API</title>
-    <!--[if mso]>
-    <noscript>
-        <xml>
-            <o:OfficeDocumentSettings>
-                <o:PixelsPerInch>96</o:PixelsPerInch>
-            </o:OfficeDocumentSettings>
-        </xml>
-    </noscript>
-    <![endif]-->
+    <title>Verify Your Email</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            color: #3d4852;
+            background-color: #f1f5f8;
             margin: 0;
             padding: 0;
-            width: 100% !important;
-            height: 100% !important;
-            background-color: #f8fafc;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            color: #334155;
-            -webkit-text-size-adjust: 100%;
-            -ms-text-size-adjust: 100%;
         }
-        
-        .email-container {
+        .container {
+            width: 100%;
             max-width: 600px;
             margin: 0 auto;
-            background-color: #ffffff;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 40px 30px;
-            text-align: center;
-            color: white;
-        }
-        
-        .logo {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-        
-        .tagline {
-            font-size: 16px;
-            opacity: 0.9;
-            margin: 0;
-        }
-        
-        .content {
-            padding: 50px 40px;
-        }
-        
-        .greeting {
-            font-size: 24px;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .message {
-            font-size: 16px;
-            line-height: 1.7;
-            color: #475569;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
-        .highlight {
-            color: #667eea;
-            font-weight: 600;
-        }
-        
-        .button-container {
-            text-align: center;
-            margin: 40px 0;
-        }
-        
-        .verify-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #ffffff !important;
-            text-decoration: none;
-            padding: 16px 40px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 16px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-        
-        .verify-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-        }
-        
-        .security-notice {
-            background-color: #f1f5f9;
-            border-left: 4px solid #3b82f6;
             padding: 20px;
-            margin: 30px 0;
-            border-radius: 0 8px 8px 0;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        
-        .security-title {
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
+        .header {
+            color: rgb(221, 152, 25);
+            font-size: x-large;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
         }
-        
-        .security-icon {
-            margin-right: 8px;
+        .logo {
+            max-width: 600px;
         }
-        
-        .security-text {
+        .content {
+            margin-bottom: 30px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #f97316;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #8795a1;
+        }
+        .fallback-text {
             font-size: 14px;
             color: #64748b;
-            margin: 0;
-        }
-        
-        .fallback {
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 30px 0;
-        }
-        
-        .fallback-title {
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-        
-        .fallback-link {
-            color: #667eea;
-            word-break: break-all;
-            text-decoration: underline;
-            font-size: 13px;
-        }
-        
-        .footer {
-            background-color: #f8fafc;
-            padding: 30px 40px;
-            text-align: center;
-            border-top: 1px solid #e2e8f0;
-        }
-        
-        .footer-text {
-            font-size: 12px;
-            color: #94a3b8;
-            margin: 0;
-        }
-        
-        .footer-links {
             margin-top: 15px;
+            padding: 10px;
+            background-color: #f8fafc;
+            border-radius: 4px;
         }
-        
-        .footer-link {
-            color: #667eea;
-            text-decoration: none;
-            font-size: 12px;
-            margin: 0 10px;
-        }
-        
-        @media only screen and (max-width: 600px) {
-            .email-container {
-                margin: 0 !important;
-                border-radius: 0 !important;
-            }
-            
-            .header {
-                padding: 30px 20px;
-            }
-            
-            .content {
-                padding: 30px 20px;
-            }
-            
-            .greeting {
-                font-size: 20px;
-            }
-            
-            .verify-button {
-                padding: 14px 30px;
-                font-size: 14px;
-            }
-            
-            .footer {
-                padding: 20px;
-            }
-        }
-        
-        @media (prefers-color-scheme: dark) {
-            .email-container {
-                background-color: #1e293b;
-            }
-            
-            .content {
-                background-color: #1e293b;
-            }
-            
-            .greeting {
-                color: #f1f5f9;
-            }
-            
-            .message {
-                color: #cbd5e1;
-            }
-            
-            .security-notice {
-                background-color: #334155;
-                border-left-color: #60a5fa;
-            }
-            
-            .security-title {
-                color: #f1f5f9;
-            }
-            
-            .security-text {
-                color: #94a3b8;
-            }
-            
-            .fallback {
-                background-color: #334155;
-                border-color: #475569;
-            }
-            
-            .fallback-title {
-                color: #f1f5f9;
-            }
+        .fallback-link {
+            color: #f97316;
+            text-decoration: underline;
+            word-break: break-all;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div style="width: 100%; padding: 40px 20px; background-color: #f8fafc;">
-        <div class="email-container">
-            <!-- Header -->
-            <div class="header">
-                <div class="logo">🚀 Premium API</div>
-                <p class="tagline">Your Gateway to Premium Features</p>
-            </div>
-            
-            <!-- Content -->
-            <div class="content">
-                <h1 class="greeting">Welcome, {{fullName}}! 🎉</h1>
-                
-                <p class="message">
-                    Thank you for joining <span class="highlight">Premium API</span>! We're excited to have you on board. 
-                    To get started and unlock all premium features, please verify your email address.
+    <div class="container">
+        <div class="content">
+            <h1>Welcome {{fullName}}!</h1>
+            <p>Thank you for registering to <b>Plugin API</b>. This email confirms that you have been registered.</p>
+            <p>To complete your registration and activate your account, please verify your account by clicking the button below:</p>
+            <p style="text-align: center;">
+                <a href="{{verificationUrl}}" class="button">Verify your account</a>
+            </p>
+            <div class="fallback-text">
+                <p>If the button above doesn't work, please copy and paste the following link into your web browser:</p>
+                <p>
+                    <a href="{{verificationUrl}}" class="fallback-link">
+                        {{verificationUrl}}
+                    </a>
                 </p>
-                
-                <div class="button-container">
-                    <a href="{{verificationUrl}}" class="verify-button">Verify Email Address</a>
-                </div>
-                
-                <div class="security-notice">
-                    <div class="security-title">
-                        <span class="security-icon">🔒</span>
-                        Security Notice
-                    </div>
-                    <p class="security-text">
-                        This verification link is secure and will expire in 24 hours for your protection.
-                        If you didn't create this account, please ignore this email.
-                    </p>
-                </div>
-                
-                <div class="fallback">
-                    <div class="fallback-title">Trouble clicking the button?</div>
-                    <p style="margin: 0; font-size: 13px; color: #64748b;">
-                        Copy and paste this link into your browser:
-                    </p>
-                    <a href="{{verificationUrl}}" class="fallback-link">{{verificationUrl}}</a>
-                </div>
             </div>
-            
-            <!-- Footer -->
-            <div class="footer">
-                <p class="footer-text">© 2025 Premium API. All rights reserved.</p>
-                <div class="footer-links">
-                    <a href="#" class="footer-link">Privacy Policy</a>
-                    <a href="#" class="footer-link">Terms of Service</a>
-                    <a href="#" class="footer-link">Support</a>
-                </div>
-            </div>
+            <p>If you did not create an account, no further action is required.</p>
+        </div>
+        <div class="footer">
+            <p>© 2024 DataFlower. All rights reserved.</p>
         </div>
     </div>
 </body>
