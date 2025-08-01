@@ -4,6 +4,9 @@ const WebhookController = require('../controllers/webhookController');
 const router = express.Router();
 const webhookController = new WebhookController();
 
-router.post('/stripe', express.raw({ type: 'application/json' }), webhookController.handleStripeWebhook);
+// Fix: Bind the context properly
+router.post('/stripe', express.raw({ type: 'application/json' }), (req, res) => {
+    webhookController.handleStripeWebhook(req, res);
+});
 
 module.exports = router;
