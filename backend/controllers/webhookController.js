@@ -171,48 +171,8 @@ class WebhookController {
         }
     }
 
-    // Add this new method for charge.failed events
     async handleChargeFailed(charge) {
-        console.log('💳 Charge failed:', charge.id);
-
-        try {
-            // Get customer from Stripe
-            const customer = await stripe.customers.retrieve(charge.customer);
-
-            const user = await User.findOne({
-                where: {
-                    [require('sequelize').Op.or]: [
-                        { email: customer.email },
-                        { stripeCustomerId: customer.id }
-                    ]
-                }
-            });
-
-            if (!user) {
-                console.error('User not found for customer:', customer.id);
-                return;
-            }
-
-            // Send charge failed email
-            const emailTemplate = await getEmailTemplate('payment-failed', {
-                fullName: user.username,
-                projectName: charge.metadata?.projectName || 'Premium License',
-                failureReason: charge.failure_message || 'Payment was declined',
-                amount: charge.amount / 100,
-                chargeId: charge.id
-            });
-
-            await sendMail({
-                to: user.email,
-                subject: 'Payment Failed - Please Try Again',
-                html: emailTemplate
-            });
-
-            console.log('📧 Charge failure email sent to:', user.email);
-
-        } catch (error) {
-            console.error('❌ Error handling charge failure:', error);
-        }
+        console.log('Charge failed:', charge.id);
     }
 
     async handleSubscriptionCreated(subscription) {
