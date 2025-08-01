@@ -85,6 +85,9 @@ class LicenseController {
       // Validate the license
       const validationResult = await license.validateLicense();
 
+      license.isActive = true;
+      await license.save();
+
       if (!validationResult.valid) {
         return res.status(403).json({
           success: false,
