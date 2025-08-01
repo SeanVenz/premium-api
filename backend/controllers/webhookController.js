@@ -15,17 +15,13 @@ class WebhookController {
         let event;
 
         try {
-            // Verify webhook signature
             event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
         } catch (err) {
-            console.error('⚠️  Webhook signature verification failed:', err.message);
+            console.error('Webhook signature verification failed:', err.message);
             return res.status(400).send(`Webhook Error: ${err.message}`);
         }
 
-        console.log('✅ Webhook verified:', event.type);
-
         try {
-            // Handle the event
             switch (event.type) {
                 case 'payment_intent.succeeded':
                     await this.handlePaymentSuccess(event.data.object);
@@ -56,7 +52,7 @@ class WebhookController {
                     break;
 
                 default:
-                    console.log(`🤷‍♂️ Unhandled event type: ${event.type}`);
+                    console.log(`Unhandled event type: ${event.type}`);
             }
 
             res.json({ received: true });
@@ -67,7 +63,7 @@ class WebhookController {
     }
 
     async handlePaymentSuccess(paymentIntent) {
-        console.log('💰 Payment succeeded:', paymentIntent.id);
+        console.log('Payment succeeded:', paymentIntent.id);
 
         try {
             // Get customer from Stripe
@@ -90,14 +86,14 @@ class WebhookController {
 
             // Extract project information from metadata
             const projectName = paymentIntent.metadata?.projectName || 'Premium License';
-            const amount = paymentIntent.amount / 100; // Convert from cents
+            const amount = paymentIntent.amount / 100;
 
             // Create license using license controller
             const licenseResult = await licenseController.createLicenseForUser(
                 user.id,
                 projectName,
                 {
-                    isActive: false, // Will be activated when user validates
+                    isActive: false,
                     validationCount: 0,
                     features: ['premium_templates', 'advanced_analytics', 'custom_branding']
                 }
@@ -105,7 +101,6 @@ class WebhookController {
 
             const license = licenseResult.data;
 
-            // Send success email with license key
             const emailTemplate = await getEmailTemplate('payment-success', {
                 fullName: user.username,
                 projectName: projectName,
@@ -120,7 +115,7 @@ class WebhookController {
                 html: emailTemplate
             });
 
-            console.log('✅ License created and email sent for user:', user.email);
+            console.log('License created and email sent for user:', user.email);
 
         } catch (error) {
             console.error('Error handling payment success:', error);
@@ -128,13 +123,12 @@ class WebhookController {
     }
 
     async handlePaymentFailed(paymentIntent) {
-        console.log('❌ Payment failed:', paymentIntent.id);
+        console.log('Payment failed:', paymentIntent.id);
 
         try {
             // Get customer from Stripe
             const customer = await stripe.customers.retrieve(paymentIntent.customer);
             
-            // Find user by email or stripeCustomerId
             const user = await User.findOne({
                 where: {
                     [require('sequelize').Op.or]: [
@@ -162,7 +156,7 @@ class WebhookController {
                 html: emailTemplate
             });
 
-            console.log('📧 Payment failure email sent to:', user.email);
+            console.log('Payment failure email sent to:', user.email);
 
         } catch (error) {
             console.error('Error handling payment failure:', error);
@@ -170,28 +164,23 @@ class WebhookController {
     }
 
     async handleSubscriptionCreated(subscription) {
-        console.log('🔄 Subscription created:', subscription.id);
-        // Handle subscription logic here
+        console.log('Subscription created:', subscription.id);
     }
 
     async handleSubscriptionUpdated(subscription) {
-        console.log('🔄 Subscription updated:', subscription.id);
-        // Handle subscription updates here
+        console.log('Subscription updated:', subscription.id);
     }
 
     async handleSubscriptionCanceled(subscription) {
-        console.log('❌ Subscription canceled:', subscription.id);
-        // Handle subscription cancellation here
+        console.log('Subscription canceled:', subscription.id);
     }
 
     async handleInvoicePaymentSucceeded(invoice) {
-        console.log('💰 Invoice payment succeeded:', invoice.id);
-        // Handle recurring payment success
+        console.log('Invoice payment succeeded:', invoice.id);
     }
 
     async handleInvoicePaymentFailed(invoice) {
-        console.log('❌ Invoice payment failed:', invoice.id);
-        // Handle recurring payment failure
+        console.log('Invoice payment failed:', invoice.id);
     }
 }
 
