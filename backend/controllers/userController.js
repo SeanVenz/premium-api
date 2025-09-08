@@ -141,11 +141,14 @@ class UserController {
             }
 
             res.status(200).json({
+            message: 'Success',
+            success: true,
+            user: {
                 id: user.id,
                 username: user.username,
-                email: user.email,
-                createdAt: user.createdAt,
-                updatedAt: user.updatedAt
+                email:user.email
+            },
+            token: req.cookies.token
             })
         } catch (error) {
             if (error.name === 'JsonWebTokenERror') {
@@ -403,6 +406,79 @@ class UserController {
                 message: 'Internal Server Error' 
             });
         }
+    }
+
+    async editUser(req, res){
+        const { id } = req.params;
+        const { username, email } = req.body;
+
+        if (!username || !email) {
+            return res.status(400).json({
+                success: false,
+                message: 'Username and email are required.'
+            });
+        }
+
+        try {
+            const user = await User.findByPk(id);
+            if (!user) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'User not found.'
+                });
+            }
+
+            await user.update({ username, email });
+            res.status(200).json({
+                success: true,
+                message: 'User updated successfully.'
+            });
+        } catch (error) {
+            console.error('Error updating user:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Internal Server Error'
+            });
+        }
+    }
+
+    async deleteUser(req, res) {
+        const { id } = req.params;
+
+        try {
+            const user = await User.findByPk(id);
+            if (!user) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'User not found.'
+                });
+            }
+
+            await user.destroy();
+            res.status(200).json({
+                success: true,
+                message: 'User deleted successfully.'
+            });
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Internal Server Error'
+            });
+        }
+    }
+
+    async getProfile(req,res){
+        res.json({
+            message: 'Success',
+            success: true,
+            user: {
+                id: req.user.id,
+                username: req.user.username,
+                email:req.user.email
+            },
+            token: req.token
+        });
     }
 }
 

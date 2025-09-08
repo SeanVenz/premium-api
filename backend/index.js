@@ -14,6 +14,7 @@ const licenseRoutes = require('./routes/licenseRoutes');
 const userRoute = require('./routes/userRoute');
 const paymentRoutes = require('./routes/paymentRoutes');
 const webhookRoutes = require('./routes/webhookRoutes');
+const todoRoutes = require('./routes/todoRoutes');
 
 // IMPORTANT: Webhook routes MUST come before express.json() middleware
 // because Stripe webhooks need raw body for signature verification
@@ -30,6 +31,7 @@ app.use(cors({
 app.use('/api/licenses', licenseRoutes);
 app.use('/api/users', userRoute);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/todos', todoRoutes);
 
 require('./database/dbFunctions');
 
