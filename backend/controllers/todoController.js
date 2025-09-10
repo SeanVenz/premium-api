@@ -107,6 +107,7 @@ class TodoController {
         try {
             const { id } = req.params;
             const { title, completed } = req.body;
+            console.log('Here',title, completed)
 
             const todo = await Todo.findByPk(id);
 
